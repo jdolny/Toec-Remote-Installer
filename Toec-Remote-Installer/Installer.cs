@@ -46,7 +46,13 @@ namespace Toec_Remote_Installer
                     if (new ServiceController("Toec").Status == ServiceControllerStatus.Running)
                     {
                         Log.Info("Toec is already installed.  Exiting.");
-                        return 1;
+                        try
+                        {
+                            var successFilePath = Path.Combine(_basePath, configObject.DeployId + ".success");
+                            File.WriteAllText(successFilePath, "");
+                        }
+                        catch { }
+                        return 0;
                     }
                     else
                     {
@@ -71,7 +77,7 @@ namespace Toec_Remote_Installer
                     result = RunProcess("/x", "\"" + uninstallGuid + "\"");
                 else
                 {
-                    result = 1;
+                    result = 0;
                     Log.Info("Could not find any Toec versions to remove.");
                 }
                 //target is any cpu so specialfolder.program files does not work properly, Toec always installs in program files, not x86
